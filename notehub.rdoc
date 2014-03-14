@@ -1,0 +1,5 @@
+= notehub
+
+Generate this with
+    notehub rdoc
+After you have described your command line interface

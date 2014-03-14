@@ -1,0 +1,48 @@
+PATH
+  remote: .
+  specs:
+    notehub (0.0.1)
+      gli (= 2.7.0)
+      highline (= 1.6.21)
+      json (= 1.5.5)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    aruba (0.5.4)
+      childprocess (>= 0.3.6)
+      cucumber (>= 1.1.1)
+      rspec-expectations (>= 2.7.0)
+    builder (3.2.2)
+    childprocess (0.5.1)
+      ffi (~> 1.0, >= 1.0.11)
+    cucumber (1.3.11)
+      builder (>= 2.1.2)
+      diff-lcs (>= 1.1.3)
+      gherkin (~> 2.12)
+      multi_json (>= 1.7.5, < 2.0)
+      multi_test (>= 0.0.2)
+    diff-lcs (1.2.5)
+    ffi (1.9.3)
+    gherkin (2.12.2)
+      multi_json (~> 1.3)
+    gli (2.7.0)
+    highline (1.6.21)
+    json (1.5.5)
+    multi_json (1.9.0)
+    multi_test (0.0.3)
+    rake (10.1.1)
+    rdoc (4.1.1)
+      json (~> 1.4)
+    rspec-expectations (2.14.5)
+      diff-lcs (>= 1.1.3, < 2.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  aruba
+  highline (~> 1.6.21)
+  notehub!
+  rake
+  rdoc

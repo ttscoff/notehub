@@ -1,0 +1,6 @@
+= notehub
+
+Describe your project here
+
+:include:notehub.rdoc
+
