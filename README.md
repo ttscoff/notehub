@@ -4,6 +4,8 @@ A CLI for working with [notehub.org](http://notehub.org) from the command line. 
 
     gem install notehub
 
+You'll need a publisher key to use the notehub CLI. Keys can be requested [here](http://www.notehub.org/api#registration). When you run `notehub`, it will create a config file in `~/.notehub/config.yml`. Edit this and provide your publisher_id and secret_key.
+
     $ notehub help
     NAME
         notehub - A command line interface for Notehub <notehub.org>
