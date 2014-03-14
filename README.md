@@ -2,6 +2,8 @@
 
 A CLI for working with [notehub.org](http://notehub.org) from the command line. Very much a work in progress.
 
+    gem install notehub
+
     $ notehub help
     NAME
         notehub - A command line interface for Notehub <notehub.org>
