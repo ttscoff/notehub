@@ -46,7 +46,7 @@ class NotehubAPI
         'default_password' => "default password for editing notes",
         'default_theme' => "light",
         'default_font' => 'Georgia'
-      }.to_yaml
+      }
 
       File.open(config_file, 'w') { |yf| YAML::dump(new_config, yf) }
     end
