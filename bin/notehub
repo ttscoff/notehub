@@ -74,6 +74,7 @@ command :create do |c|
     additional_options[:theme] = options[:theme] ? options[:theme] : nh.default_theme
     additional_options[:font] = options[:font] ? options[:font] : nh.default_font
     additional_options[:header_font] = options[:header] ? options[:header] : nh.default_header_font
+    additional_options[:file] = File.expand_path(options[:f]) if options[:f]
 
     res = nh.new_note(input, options[:p], additional_options)
 
@@ -97,8 +98,57 @@ end
 #   end
 # end
 
+desc 'Create or update from a file'
+arg_name 'file_name'
+command :file do |c|
+  c.action do |global_options,options,args|
+    id = nil
+    input = nil
+    pass = nil
+    notes = nh.notes['notes']
+    notes.each {|k,note|
+      if note.has_key?('file')
+        if File.basename(note['file']) == File.basename(args[0])
+          note['file'] = File.expand_path(args[0])
+          nh.store_note(note)
+          id = note['id']
+          pass = note['pass']
+          input = "use_previous"
+          break
+        end
+      end
+    }
+    if id
+      res = nh.update_note(id, input, pass)
+      if res
+        puts "Note updated"
+      else
+        puts "Error updating note"
+      end
+    else
+      file = File.expand_path(args[0])
+      if File.exists?(file)
+        additional_options = {}
+        additional_options[:theme] = nh.default_theme
+        additional_options[:font] = nh.default_font
+        additional_options[:header_font] = nh.default_header_font
+        additional_options[:file] = File.expand_path(args[0])
+        input = IO.read(file)
+        res = nh.new_note(input, nh.default_password, additional_options)
+        if res
+          puts "Note created"
+        else
+          puts "Error creating note"
+        end
+      else
+        raise "No such file"
+      end
+    end
+  end
+end
+
 desc 'Update a note'
-arg_name 'noteID'
+arg_name 'search_term'
 command :update do |c|
   # TODO: Check note db for password if choosing from list
   c.desc 'ID for note (default: choose from list)'
@@ -113,7 +163,10 @@ command :update do |c|
 
   c.desc 'Read input from file'
   default_value false
-  c.flag [:f,:file]
+  c.flag [:f,:file,'file_name']
+
+  c.desc 'Update from previously used file (re-use)'
+  c.switch [:r,:reuse]
 
   c.desc 'Copy resulting url to clipboard'
   c.switch [:c,:copy]
@@ -125,7 +178,7 @@ command :update do |c|
   c.switch [:s,:short]
 
   c.action do |global_options,options,args|
-    if options[:f]
+    if options[:f] && !options[:r]
       if File.exists?(File.expand_path(options[:f]))
         input = IO.read(File.expand_path(options[:f]))
       else
@@ -133,9 +186,8 @@ command :update do |c|
       end
     elsif options[:P]
       input = %x{pbpaste}
-    elsif args.length > 0 && args[0] != "-"
-      input = args.join(" ")
-    # elsif STDIN.stat.size > 0
+    elsif options[:r]
+      input = "use_previous"
     else
       # puts "Input note text, ^d to submit" unless STDIN.stat.size > 0
       if RUBY_VERSION.to_f > 1.9
@@ -146,13 +198,26 @@ command :update do |c|
     # else
     #   raise "No input or text specified for note"
     end
-    if options[:id]
-      id = options[:id]
-    else
-      note = nh.choose_note
-      raise "Error reading selected note" unless note
-      id = note['id'].strip
+
+    args = args.join(" ").strip
+    note = false
+    notes = nh.notes['notes']
+    if args =~ /\S\/\S/ && args =~ /^[a-z0-9\/\-]+$/
+
+      if notes.has_key? (args)
+        note = notes[args]
+      end
     end
+
+    unless note
+      puts "Choose a note:"
+      note = nh.choose_note(args)
+    end
+
+
+    raise "Error reading selected note" unless note
+    id = note['id'].strip
+
     res = nh.update_note(id, input, options[:p])
     raise "Error updating note" unless res
 
@@ -208,7 +273,8 @@ command :info do |c|
         out += "Created: #{note['stats']['published']}" + "\n"
         out += " Edited: #{note['stats']['edited']}" + "\n" if note['stats'].has_key?('edited')
         out += "  Views: #{note['stats']['views']}" + "\n"
-        out += "     ID: #{note['id']}"
+        out += "     ID: #{note['id']}" + "\n"
+        out += "   File: #{note['file']}" if note.has_key?('file')
       end
       puts out
 

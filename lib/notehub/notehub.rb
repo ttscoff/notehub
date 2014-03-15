@@ -161,7 +161,8 @@ class NotehubAPI
         'url' => res['longURL'],
         'short' => res['shortURL'],
         'stats' => note_data['statistics'],
-        'pass' => pass || ""
+        'pass' => pass ? pass : "",
+        'file' => options[:file] ? options[:file] : ""
       }
       store_note(note)
       return note
@@ -175,7 +176,26 @@ class NotehubAPI
   end
 
   def update_note(id, text, pass=false)
-    # TODO: Signature invalid
+    note = @notes['notes'][id]
+    if note.has_key?('file')
+      if text.nil? || text == "use_previous"
+        file = File.expand_path(note['file'])
+        if File.exists?(file)
+          unless text == "use_previous"
+            puts "File: #{file}"
+            res = ask("Read from file? (Y/n) ", String)
+            if res.strip =~ /^y?$/i
+              text = IO.read(file)
+            end
+          else
+            text = IO.read(file)
+          end
+        end
+      end
+    end
+
+    return false unless text
+
     params = {}
     pass ||= @default_password
     # raise "Password required for update" unless pass
