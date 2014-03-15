@@ -1,6 +1,6 @@
 = notehub
 
-Describe your project here
+A CLI for notehub.org.
 
 :include:notehub.rdoc
 
