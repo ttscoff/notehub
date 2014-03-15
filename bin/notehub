@@ -105,6 +105,7 @@ command :file do |c|
     id = nil
     input = nil
     pass = nil
+    short = nil
     notes = nh.notes['notes']
     notes.each {|k,note|
       if note.has_key?('file')
@@ -112,6 +113,7 @@ command :file do |c|
           note['file'] = File.expand_path(args[0])
           nh.store_note(note)
           id = note['id']
+          short = note['short']
           pass = note['pass']
           input = "use_previous"
           break
@@ -120,8 +122,10 @@ command :file do |c|
     }
     if id
       res = nh.update_note(id, input, pass)
+      nh.tag_file(id,short)
       if res
         puts "Note updated"
+
       else
         puts "Error updating note"
       end
@@ -137,6 +141,7 @@ command :file do |c|
         res = nh.new_note(input, nh.default_password, additional_options)
         if res
           puts "Note created"
+          nh.tag_file(res['id'],res['short'])
         else
           puts "Error creating note"
         end
@@ -150,7 +155,6 @@ end
 desc 'Update a note'
 arg_name 'search_term'
 command :update do |c|
-  # TODO: Check note db for password if choosing from list
   c.desc 'ID for note (default: choose from list)'
   c.default_value false
   c.flag [:id]

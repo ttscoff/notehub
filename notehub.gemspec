@@ -25,6 +25,6 @@ lib/notehub.rb
   s.add_development_dependency('rdoc')
   s.add_development_dependency('aruba')
   s.add_runtime_dependency('gli','2.7.0')
-  s.add_runtime_dependency('json','1.5.5')
+  s.add_runtime_dependency('json','1.8.1')
   s.add_runtime_dependency('highline','1.6.21')
 end

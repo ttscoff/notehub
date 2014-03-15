@@ -4,7 +4,7 @@ PATH
     notehub (0.0.3)
       gli (= 2.7.0)
       highline (= 1.6.21)
-      json (= 1.5.5)
+      json (= 1.8.1)
 
 GEM
   remote: https://rubygems.org/
@@ -28,7 +28,7 @@ GEM
       multi_json (~> 1.3)
     gli (2.7.0)
     highline (1.6.21)
-    json (1.5.5)
+    json (1.8.1)
     multi_json (1.9.0)
     multi_test (0.0.3)
     rake (10.1.1)

@@ -255,7 +255,7 @@ class NotehubAPI
   end
 
   def choose_note(term=".*")
-    # TODO: If there's input on STDIN, gets fails. Use highline?
+
     puts "Choose a note:"
 
     list = find_notes(term)
@@ -266,6 +266,20 @@ class NotehubAPI
     return false if num =~ /^[a-z ]*$/i
 
     list[num.to_i - 1]
+  end
+
+  def tag_file(id,short)
+    if @notes['notes'].has_key?([id])
+      note = @notes['notes'][id]
+      file = note.has_key?('file') ? note['file'] : false
+      return false unless file
+      content = IO.read(File.expand_path(file))
+      output = "\n\n<!-- <#{short}> #{id} -->\n"
+      File.open(File.expand_path(file),'w+') do |f|
+        f.puts content
+        f.puts output
+      end
+    end
   end
 end
 
